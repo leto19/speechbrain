@@ -36,7 +36,9 @@ def normalise_transcript(transcript):
     """
     Removes the punctiuation characters + tags from the simulated transcripts.
     """
-    regex = re.compile(r"[^A-Z^\s][^\s]+")
+    # regex = re.compile(r"[^A-Z^\s][^\s]+")
+    regex = re.compile(r"[^A-Z^\s]")
+
     # print(transcript)
     out = re.sub(regex, "", transcript)
     # print(out)
@@ -134,11 +136,20 @@ def prepare_chime3(
                         # get the path to the folder where the wav files are:
                         # NOTE the format for the wav directory names is slightly different to that of the transcripts,
                         # hence this line:
-                        folder_path = (
-                            dset + "_" + loc.lower() + "_" + dtype.split(".")[0]
-                        )
+                        if loc.lower() != "org":
+                            folder_path = (
+                                dset
+                                + "_"
+                                + loc.lower()
+                                + "_"
+                                + dtype.split(".")[0]
+                            )
+                        else:  # if we're using the orignal data, there's a slightly different path setup
+                            folder_path = dset + "_org"
+
                         folder_path = os.path.join(audio_path, folder_path)
 
+                        # print(folder_path)
                         # get the multi channel data - note that channel 2 (at index 1 here)
                         # is backwards facing so should not be used as input to a beamformer
                         channels = sorted(
